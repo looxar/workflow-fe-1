@@ -1,18 +1,26 @@
 "use client";
-import Image from "next/image";
 // import ComponentProps from "@/components/ComponentProps";
 import EventProps from "@/components/EventProps";
 import ListRender from "@/components/ListRender";
 import TaskList from "@/components/TaskList";
+import ObjectRender from "@/components/ObjectRender";
+import StatePrimitive from "@/components/StatePrimitive";
 
 function Home() {
+  const task = {
+    title: "เบิกงบ",
+    amount: 20,
+  };
   return (
     <div>
+      <StatePrimitive />
       {/* <ListRender /> */}
       {/* <TaskList /> */}
       {/* <ComponentProps />  */}
+      {/* <ObjectRender title={task.title} amount={100} /> */}
+
       {/* <EventProps /> */}
-      <table className="min-w-full divide-y divide-gray-200">
+      {/* <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
             <th
@@ -42,7 +50,7 @@ function Home() {
           </tr>
         </thead>
         <Body />
-      </table>
+      </table> */}
     </div>
   );
 }

@@ -1,24 +1,18 @@
 type A = string;
+interface Props { 
+  title: string; 
+  amount: NullableNumber
+}
 
-function ObjectRender() {
-  const task = {
-    title: "เบิกงบ",
-    amount: 20,
-  };
+type NullableNumber = number | null 
+
+function ObjectRender(props: Props) {
   return (
     <div>
-      <h1>Task: {task.title}</h1>
-      <p>${task.amount}</p>
+      <h1>Task: {props.title}</h1>
+      <p>${props.amount || "-"}</p>
     </div>
   );
 }
-
-export function Primitive() {
-  return <div>primitive</div>;
-}
-
-export const name = "xxx";
-export const age = "xxx";
-const title = "xxx";
 
 export default ObjectRender;
