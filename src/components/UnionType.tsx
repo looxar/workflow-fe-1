@@ -3,12 +3,11 @@ function Demo() {
     <div>
       <MyButton color="green">Approve</MyButton>
       <MyButton color="red">Reject</MyButton>
-      <MyButton color="rde" content={"Reject 2"} />
     </div>
   );
 }
 
-type Color = "green" | "red" | "blue"
+type Color = "green" | "red" | "blue";
 
 type MyButtonProps = {
   color: Color;

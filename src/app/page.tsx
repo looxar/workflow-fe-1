@@ -5,6 +5,7 @@ import ListRender from "@/components/ListRender";
 import TaskList from "@/components/TaskList";
 import ObjectRender from "@/components/ObjectRender";
 import StatePrimitive from "@/components/StatePrimitive";
+import StateObject from "@/components/StateObject";
 
 function Home() {
   const task = {
@@ -13,7 +14,8 @@ function Home() {
   };
   return (
     <div>
-      <StatePrimitive />
+      {/* <StatePrimitive /> */}
+      <StateObject />
       {/* <ListRender /> */}
       {/* <TaskList /> */}
       {/* <ComponentProps />  */}
