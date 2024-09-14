@@ -9,6 +9,7 @@ import FormAddRequest from "@/components/FormAddRequest";
 import DoubleEffect from "@/components/DoubleEffect";
 import CallAPI from "@/components/CallAPI";
 import DemoUseEffect from "@/components/DemoUseEffect";
+import Comp1 from "@/components/DemoContext";
 
 let nextId = 3;
 function Home() {
@@ -70,9 +71,6 @@ function Home() {
 
   return (
     <div>
-      <DemoUseEffect />
-      {/* <CallAPI /> */}
-      {/* <DoubleEffect />
       <Header />
       <main className="container mx-auto">
         <div className="mt-4">
@@ -101,7 +99,7 @@ function Home() {
         <div className="mt-4">
           <BudgetRequestDataTable items={budgetRequests} />
         </div>
-      </main> */}
+      </main>
     </div>
   );
 }
