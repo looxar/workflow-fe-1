@@ -6,6 +6,9 @@ import BudgetRequestDataTable from "../components/BudgetRequestDataTable";
 import Header from "@/components/Header";
 import { BudgetRequest } from "@/models/budget-request";
 import FormAddRequest from "@/components/FormAddRequest";
+import DoubleEffect from "@/components/DoubleEffect";
+import CallAPI from "@/components/CallAPI";
+import DemoUseEffect from "@/components/DemoUseEffect";
 
 let nextId = 3;
 function Home() {
@@ -67,6 +70,9 @@ function Home() {
 
   return (
     <div>
+      <DemoUseEffect />
+      {/* <CallAPI /> */}
+      {/* <DoubleEffect />
       <Header />
       <main className="container mx-auto">
         <div className="mt-4">
@@ -95,7 +101,7 @@ function Home() {
         <div className="mt-4">
           <BudgetRequestDataTable items={budgetRequests} />
         </div>
-      </main>
+      </main> */}
     </div>
   );
 }
