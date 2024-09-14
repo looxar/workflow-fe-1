@@ -1,48 +1,39 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import BudgetPanel from "@/components/BudgetPanel";
 import BudgetRequestDataTable from "../components/BudgetRequestDataTable";
 import Header from "@/components/Header";
 import { BudgetRequest } from "@/models/budget-request";
-import FormAddRequest from "@/components/FormAddRequest";
-import DoubleEffect from "@/components/DoubleEffect";
-import CallAPI from "@/components/CallAPI";
-import DemoUseEffect from "@/components/DemoUseEffect";
-import Comp1 from "@/components/DemoContext";
+import { createBudgetItem, fetchBudgetItems } from "@/services/budget-item";
 
 let nextId = 3;
 function Home() {
-  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([
-    {
-      id: 1,
-      title: "Monitor",
-      amount: 100,
-      quantity: 1,
-      status: "PENDING",
-    },
-    {
-      id: 2,
-      title: "Ram",
-      amount: 200,
-      quantity: 1,
-      status: "APPROVED",
-    },
-    // {
-    //   id: 3,
-    //   title: "CPU",
-    //   amount: 300,
-    //   quantity: 1,
-    //   status: "APPROVED",
-    // },
-  ]);
-  const addRequest = (newRequest: BudgetRequest) => {
-    setBudgetRequests([...budgetRequests, newRequest]);
+  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([]);
+
+  useEffect(() => {
+    fetchBudgetItems().then((items) => setBudgetRequests(items));
+  }, []);
+
+  const addRequest = async (newRequest: BudgetRequest) => {
+    try {
+      const insertedRequest = await createBudgetItem({
+        title: newRequest.title,
+        quantity: newRequest.quantity,
+        price: newRequest.price,
+      });
+      setBudgetRequests([...budgetRequests, insertedRequest]);
+    } catch (err: any) {
+      const messsages = err.response.data.message;
+
+      alert(`Fail to create - reason ${JSON.stringify(messsages)}`);
+    }
   };
+
   const [newRequest, setNewRequest] = useState<BudgetRequest>({
     id: 0,
     title: "",
-    amount: 0,
+    price: 0,
     quantity: 1,
     status: "APPROVED",
   });
@@ -63,7 +54,7 @@ function Home() {
     addRequest({
       id: nextId++,
       title: newRequest.title,
-      amount: newRequest.amount,
+      price: newRequest.price,
       quantity: 1,
       status: "APPROVED",
     });
@@ -88,9 +79,9 @@ function Home() {
           <div>
             Amount:
             <input
-              name="amount"
+              name="price"
               type="number"
-              value={newRequest.amount}
+              value={newRequest.price}
               onChange={updateField}
             />
           </div>

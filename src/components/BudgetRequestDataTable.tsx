@@ -40,7 +40,7 @@ function BudgetRequestDataTable({ items }: BudgetRequestDataTableProps) {
               {request.quantity} Units
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-right">
-              {formatDecimal(request.amount)}
+              {formatDecimal(request.price)}
             </td>
           </tr>
         ))}
