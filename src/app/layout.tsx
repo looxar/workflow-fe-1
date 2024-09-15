@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { BudgetRequestContextProvider } from "./contexts/BudgetRequestContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Link href="/">Home</Link>
         <Link href="/about">About</Link>
-        {children}
+        <BudgetRequestContextProvider>{children}</BudgetRequestContextProvider>
       </body>
     </html>
   );

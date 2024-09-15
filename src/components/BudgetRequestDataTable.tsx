@@ -1,13 +1,13 @@
 import { formatDecimal } from "@/lib/format-decimal";
 import { BudgetRequest } from "@/models/budget-request";
 import { Pencil } from "lucide-react";
+import Link from "next/link";
 
 interface BudgetRequestDataTableProps {
   items: BudgetRequest[];
 }
 
 function BudgetRequestDataTable({ items }: BudgetRequestDataTableProps) {
-
   return (
     <table className="min-w-full bg-white">
       <thead>
@@ -28,9 +28,12 @@ function BudgetRequestDataTable({ items }: BudgetRequestDataTableProps) {
         {items.map((request) => (
           <tr key={request.id}>
             <td className="px-6 py-4 whitespace-nowrap">
-              <button className="text-gray-600 hover:text-blue-600">
+              <Link
+                href={`/edit/${request.id}`}
+                className="text-gray-600 hover:text-blue-600"
+              >
                 <Pencil className="h-4 w-4" />
-              </button>
+              </Link>
             </td>
             <td className="px-6 py-4 whitespace-nowrap text-right">
               {request.id}

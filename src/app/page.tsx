@@ -1,44 +1,17 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useContext, useState } from "react";
 import BudgetPanel from "@/components/BudgetPanel";
 import BudgetRequestDataTable from "../components/BudgetRequestDataTable";
 import Header from "@/components/Header";
 import { BudgetRequest } from "@/models/budget-request";
-import FormAddRequest from "@/components/FormAddRequest";
-import DoubleEffect from "@/components/DoubleEffect";
-import CallAPI from "@/components/CallAPI";
-import DemoUseEffect from "@/components/DemoUseEffect";
-import Comp1 from "@/components/DemoContext";
+import { BudgetRequestContext } from "./contexts/BudgetRequestContext";
 
 let nextId = 3;
 function Home() {
-  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([
-    {
-      id: 1,
-      title: "Monitor",
-      amount: 100,
-      quantity: 1,
-      status: "PENDING",
-    },
-    {
-      id: 2,
-      title: "Ram",
-      amount: 200,
-      quantity: 1,
-      status: "APPROVED",
-    },
-    // {
-    //   id: 3,
-    //   title: "CPU",
-    //   amount: 300,
-    //   quantity: 1,
-    //   status: "APPROVED",
-    // },
-  ]);
-  const addRequest = (newRequest: BudgetRequest) => {
-    setBudgetRequests([...budgetRequests, newRequest]);
-  };
+  const { items, addItem } = useContext(BudgetRequestContext);
+  const budgetRequests = items;
+
   const [newRequest, setNewRequest] = useState<BudgetRequest>({
     id: 0,
     title: "",
@@ -60,7 +33,7 @@ function Home() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    addRequest({
+    addItem({
       id: nextId++,
       title: newRequest.title,
       amount: newRequest.amount,
