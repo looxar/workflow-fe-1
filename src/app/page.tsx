@@ -1,65 +1,21 @@
-"use client";
-
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import BudgetPanel from "@/components/BudgetPanel";
 import BudgetRequestDataTable from "../components/BudgetRequestDataTable";
 import Header from "@/components/Header";
-import { BudgetRequest } from "@/models/budget-request";
-import { createBudgetItem, fetchBudgetItems } from "@/services/budget-item";
+import { fetchBudgetItems } from "@/services/budget-item";
 
-let nextId = 3;
-function Home() {
-  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([]);
+import { createBudgetAction } from "@/actions/create-budget-action";
 
-  useEffect(() => {
-    fetchBudgetItems().then((items) => setBudgetRequests(items));
-  }, []);
+type HomeProps = {
+  searchParams: Params;
+};
 
-  const addRequest = async (newRequest: BudgetRequest) => {
-    try {
-      const insertedRequest = await createBudgetItem({
-        title: newRequest.title,
-        quantity: newRequest.quantity,
-        price: newRequest.price,
-      });
-      setBudgetRequests([...budgetRequests, insertedRequest]);
-    } catch (err: any) {
-      const messsages = err.response.data.message;
+type Params = {
+  errors?: string;
+};
 
-      alert(`Fail to create - reason ${JSON.stringify(messsages)}`);
-    }
-  };
-
-  const [newRequest, setNewRequest] = useState<BudgetRequest>({
-    id: 0,
-    title: "",
-    price: 0,
-    quantity: 1,
-    status: "APPROVED",
-  });
-
-  const updateField = (event: ChangeEvent<HTMLInputElement>) => {
-    const value =
-      event.target.type === "number"
-        ? Number(event.target.value)
-        : event.target.value;
-    setNewRequest({
-      ...newRequest,
-      [event.target.name]: value,
-    });
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    addRequest({
-      id: nextId++,
-      title: newRequest.title,
-      price: newRequest.price,
-      quantity: 1,
-      status: "APPROVED",
-    });
-  };
-
+async function Home({ searchParams }: HomeProps) {
+  const budgetRequests = await fetchBudgetItems();
+  const errors = JSON.parse(searchParams?.errors ?? "{}");
   return (
     <div>
       <Header />
@@ -67,23 +23,16 @@ function Home() {
         <div className="mt-4">
           <BudgetPanel items={budgetRequests} />
         </div>
-        <form onSubmit={handleSubmit}>
+        <form action={createBudgetAction}>
           <div>
             Title:
-            <input
-              name="title"
-              value={newRequest.title}
-              onChange={updateField}
-            />
+            <input name="title" />
+            <p className="text-red-500">{errors.title}</p>
           </div>
           <div>
-            Amount:
-            <input
-              name="price"
-              type="number"
-              value={newRequest.price}
-              onChange={updateField}
-            />
+            Price:
+            <input name="price" type="number" />
+            <p className="text-red-500">{errors.price}</p>
           </div>
           <button>Add</button>
         </form>
