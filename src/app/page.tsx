@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import BudgetPanel from "@/components/BudgetPanel";
 import BudgetRequestDataTable from "../components/BudgetRequestDataTable";
 import Header from "@/components/Header";
@@ -12,6 +12,7 @@ import DemoUseEffect from "@/components/DemoUseEffect";
 import Comp1 from "@/components/DemoContext";
 
 let nextId = 3;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 function Home() {
   const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([
     {
@@ -28,13 +29,6 @@ function Home() {
       quantity: 1,
       status: "APPROVED",
     },
-    // {
-    //   id: 3,
-    //   title: "CPU",
-    //   amount: 300,
-    //   quantity: 1,
-    //   status: "APPROVED",
-    // },
   ]);
   const addRequest = (newRequest: BudgetRequest) => {
     setBudgetRequests([...budgetRequests, newRequest]);
@@ -68,6 +62,14 @@ function Home() {
       status: "APPROVED",
     });
   };
+
+  useEffect(() => {
+    fetch(`${apiUrl}`)
+      .then(response => response.json())
+      .then(data => console.log(data));
+
+      
+  }, []);
 
   return (
     <div>

@@ -8,19 +8,28 @@ function Header() {
           <Link href="/" className="text-xl font-bold">
             Budget App
           </Link>
-          <Link href="/entry" className="text-sm">
-            Entry
+          <Link href="/add" className="text-sm">
+            Add
           </Link>
           <Link href="/approval" className="text-sm">
             Approval
           </Link>
+          <Link href="/edit" className="text-sm">
+            Edit
+          </Link>
         </nav>
+
+        
         <div className="text-sm">
-          admin@test.com |{" "}
+          {/* admin@test.com |{" "}
           <Link href="/logout" className="text-blue-600 hover:underline">
             Logout
+          </Link> */}
+          <Link href="/login" className="text-blue-600 hover:underline">
+            Login
           </Link>
         </div>
+
       </div>
     </header>
   );
