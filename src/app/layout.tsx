@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import { BudgetProvider } from "@/components/BudgetContext";
+import { AuthProvider } from "@/components/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,9 @@ export default function RootLayout({
       <body className={inter.className}>
         {/* <Link href="/">Home</Link>
         <Link href="/about">About</Link> */}
-        <BudgetProvider>{children}</BudgetProvider>
+        <AuthProvider>
+          <BudgetProvider>{children}</BudgetProvider>
+        </AuthProvider>
       </body>
     </html>
   );

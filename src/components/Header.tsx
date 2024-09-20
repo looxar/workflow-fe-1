@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { useAuth } from "./AuthContext"; // Adjust path as needed
 
 function Header() {
+  const { username, logout } = useAuth(); // Access auth context
+
   return (
     <header className="bg-white border-b">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -8,28 +11,34 @@ function Header() {
           <Link href="/" className="text-xl font-bold">
             Budget App
           </Link>
-          {/* <Link href="/add" className="text-sm">
-            Add
-          </Link> */}
-          <Link href="/approval" className="text-sm">
-            Approval
-          </Link>
-          {/* <Link href="/edit" className="text-sm">
-            Edit
-          </Link> */}
+          
+          {/* Conditionally render the Approval menu only if the user is logged in */}
+          {username && (
+            <Link href="/approval" className="text-sm">
+              Approval
+            </Link>
+          )}
         </nav>
 
-        
         <div className="text-sm">
-          {/* admin@test.com |{" "}
-          <Link href="/logout" className="text-blue-600 hover:underline">
-            Logout
-          </Link> */}
-          <Link href="/login" className="text-blue-600 hover:underline">
-            Login
-          </Link>
+          {username ? (
+            <>
+              {/* Display the username and logout link */}
+              {username} |{" "}
+              <button
+                onClick={logout}
+                className="text-blue-600 hover:underline"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            // Show Login link if not logged in
+            <Link href="/login" className="text-blue-600 hover:underline">
+              Login
+            </Link>
+          )}
         </div>
-
       </div>
     </header>
   );
