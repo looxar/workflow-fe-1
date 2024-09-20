@@ -11,28 +11,10 @@ import CallAPI from "@/components/CallAPI";
 import DemoUseEffect from "@/components/DemoUseEffect";
 import Comp1 from "@/components/DemoContext";
 
-let nextId = 3;
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+
 function Home() {
-  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([
-    {
-      id: 1,
-      title: "Monitor",
-      amount: 100,
-      quantity: 1,
-      status: "PENDING",
-    },
-    {
-      id: 2,
-      title: "Ram",
-      amount: 200,
-      quantity: 1,
-      status: "APPROVED",
-    },
-  ]);
-  const addRequest = (newRequest: BudgetRequest) => {
-    setBudgetRequests([...budgetRequests, newRequest]);
-  };
+  const [budgetRequests, setBudgetRequests] = useState<BudgetRequest[]>([]);
   const [newRequest, setNewRequest] = useState<BudgetRequest>({
     id: 0,
     title: "",
@@ -40,6 +22,14 @@ function Home() {
     quantity: 1,
     status: "APPROVED",
   });
+
+  const addRequest = (newRequest: BudgetRequest) => {
+    // Add the new request and sort by id
+    setBudgetRequests((prevRequests) => {
+      const updatedRequests = [...prevRequests, newRequest];
+      return updatedRequests.sort((a: BudgetRequest, b: BudgetRequest) => a.id - b.id); // Explicitly type a and b
+    });
+  };
 
   const updateField = (event: ChangeEvent<HTMLInputElement>) => {
     const value =
@@ -55,20 +45,38 @@ function Home() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     addRequest({
-      id: nextId++,
-      title: newRequest.title,
-      amount: newRequest.amount,
+      ...newRequest,
+      id: budgetRequests.length + 1,
+    });
+    setNewRequest({
+      id: 0,
+      title: "",
+      amount: 0,
       quantity: 1,
       status: "APPROVED",
     });
   };
 
-  useEffect(() => {
-    fetch(`${apiUrl}`)
-      .then(response => response.json())
-      .then(data => console.log(data));
 
-      
+  useEffect(() => {
+    if (apiUrl) {
+      fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+          if (Array.isArray(data.data)) {
+            // Set and sort the budget requests by id
+            const sortedData = data.data.sort(
+              (a: BudgetRequest, b: BudgetRequest) => a.id - b.id
+            );
+            setBudgetRequests(sortedData);
+          } else {
+            console.error('Fetched data is not an array:', data.data);
+          }
+        })
+        .catch((error) => console.error('Error fetching data:', error));
+    } else {
+      console.error('API URL is not defined');
+    }
   }, []);
 
   return (
@@ -78,26 +86,6 @@ function Home() {
         <div className="mt-4">
           <BudgetPanel items={budgetRequests} />
         </div>
-        <form onSubmit={handleSubmit}>
-          <div>
-            Title:
-            <input
-              name="title"
-              value={newRequest.title}
-              onChange={updateField}
-            />
-          </div>
-          <div>
-            Amount:
-            <input
-              name="amount"
-              type="number"
-              value={newRequest.amount}
-              onChange={updateField}
-            />
-          </div>
-          <button>Add</button>
-        </form>
         <div className="mt-4">
           <BudgetRequestDataTable items={budgetRequests} />
         </div>

@@ -1,46 +1,77 @@
+// app/add/page.tsx
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
-import BudgetPanel from "@/components/BudgetPanel";
-import BudgetRequestDataTable from "../../components/BudgetRequestDataTable";
+import { useState } from "react";
 import Header from "@/components/Header";
-import { BudgetRequest } from "@/models/budget-request";
-import FormAddRequest from "@/components/FormAddRequest";
-import DoubleEffect from "@/components/DoubleEffect";
-import CallAPI from "@/components/CallAPI";
-import DemoUseEffect from "@/components/DemoUseEffect";
-import Comp1 from "@/components/DemoContext";
-import { title } from "process";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
+import { useBudget } from "@/components/BudgetContext";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL + "/items";
 
 function Add() {
-  // State variables to store form data
+  const { addRequest } = useBudget(); // Access addRequest from context
+  const router = useRouter(); // Initialize the router hook
+
   const [title, setTitle] = useState("");
-  const [amount, setAmount] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [amount, setAmount] = useState<number | "">("");
+  const [quantity, setQuantity] = useState<number | "">("");
+  const [loading, setLoading] = useState(false); // For loading state
+  const [message, setMessage] = useState(""); // For success/error messages
 
-  // Function to handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newBudget = { title, amount, quantity };
-    console.log("New Budget:", newBudget);
 
-    // Reset form fields
-    setTitle("");
-    setAmount("");
-    setQuantity("");
-  };
+    // Prepare the data to send
+    const newBudget = {
+      title,
+      amount: Number(amount),
+      quantity: Number(quantity),
+    };
 
-  // Function to handle change in input fields
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
-  };
+    try {
+      setLoading(true);
+      setMessage("");
 
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-  };
+      // Send POST request to backend
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newBudget),
+      });
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuantity(e.target.value);
+      if (response.ok) {
+        const data = await response.json();
+
+        // Add the new request to context state (or use a refetch strategy)
+        addRequest({
+          ...data, // Use returned data to ensure consistency with the backend
+          id: data.id, // Assuming backend returns an ID
+          status: "APPROVED", // Set status as required
+        });
+
+        // Reset form fields
+        setTitle("");
+        setAmount("");
+        setQuantity("");
+
+        // Set success message
+        setMessage("Budget request added successfully!");
+        // Redirect to the main page after 2 seconds
+        setTimeout(() => {
+          router.push("/"); // Replace "/" with your main page route if different
+        }, 2000);
+      } else {
+        // Handle error responses
+        setMessage(`Error: ${response.status} - ${response.statusText}`);
+      }
+    } catch (error) {
+      setMessage("An error occurred while adding the budget request.");
+      console.error("Error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,9 +79,18 @@ function Add() {
       <Header />
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-lg">
-          <h1 className="text-2xl font-bold mb-6 text-center">
-            Add New Budget
-          </h1>
+          <h1 className="text-2xl font-bold mb-6 text-center">Add New Budget</h1>
+
+          {/* Display message */}
+          {message && (
+            <div
+              className={`mb-4 p-4 rounded-lg ${
+                message.includes("success") ? "bg-green-200" : "bg-red-200"
+              }`}
+            >
+              {message}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
@@ -60,7 +100,7 @@ function Add() {
               <input
                 type="text"
                 value={title}
-                onChange={handleTitleChange}
+                onChange={(e) => setTitle(e.target.value)}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
@@ -73,7 +113,7 @@ function Add() {
               <input
                 type="number"
                 value={quantity}
-                onChange={handleQuantityChange}
+                onChange={(e) => setQuantity(Number(e.target.value))}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
@@ -86,7 +126,7 @@ function Add() {
               <input
                 type="number"
                 value={amount}
-                onChange={handleAmountChange}
+                onChange={(e) => setAmount(Number(e.target.value))}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
@@ -95,8 +135,9 @@ function Add() {
             <button
               type="submit"
               className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              disabled={loading}
             >
-              Add Budget
+              {loading ? "Adding..." : "Add Budget"}
             </button>
           </form>
         </div>
@@ -104,4 +145,5 @@ function Add() {
     </div>
   );
 }
+
 export default Add;
