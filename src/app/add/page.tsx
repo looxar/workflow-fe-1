@@ -48,7 +48,7 @@ function Add() {
         addRequest({
           ...data, // Use returned data to ensure consistency with the backend
           id: data.id, // Assuming backend returns an ID
-          status: "APPROVED", // Set status as required
+          status: "PENDING", // Set status as required
         });
 
         // Reset form fields
@@ -72,6 +72,12 @@ function Add() {
     } finally {
       setLoading(false);
     }
+  };
+
+   // Handle back button click
+   const handleBack = () => {
+    router.back(); // Navigate to the previous page
+    // or use router.push('/') to go to a specific route
   };
 
   return (
@@ -132,13 +138,23 @@ function Add() {
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              disabled={loading}
-            >
-              {loading ? "Adding..." : "Add Budget"}
-            </button>
+            <div className="flex justify-between">
+              <button
+                type="submit"
+                className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                disabled={loading}
+              >
+                {loading ? "Adding..." : "Add Budget"}
+              </button>
+
+              <button
+                type="button"
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400"
+                onClick={handleBack}
+              >
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       </div>

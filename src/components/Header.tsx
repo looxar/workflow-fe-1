@@ -8,15 +8,15 @@ function Header() {
           <Link href="/" className="text-xl font-bold">
             Budget App
           </Link>
-          <Link href="/add" className="text-sm">
+          {/* <Link href="/add" className="text-sm">
             Add
-          </Link>
+          </Link> */}
           <Link href="/approval" className="text-sm">
             Approval
           </Link>
-          <Link href="/edit" className="text-sm">
+          {/* <Link href="/edit" className="text-sm">
             Edit
-          </Link>
+          </Link> */}
         </nav>
 
         
